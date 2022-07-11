@@ -30,7 +30,7 @@ function eventsAlarms(){
                             field: 'severity',
                             sortable: 'true',
                             align: 'center',
-                            title: 'Severidade' ,
+                            title: i18next.t('titleSeverity') ,
                             formatter: severityFormatter
                         }, {
                             field: 'name',
@@ -73,6 +73,8 @@ function eventsAlarms(){
     }
 
     listAlarms();
+    $('.search-input').attr('style', 'width: 28rem');
+    $('.search-input').attr('placeholder', 'Pesquisar');
 }
 
 function filterOptions() {
@@ -80,4 +82,54 @@ function filterOptions() {
     $('#alarms-table').bootstrapTable('filterBy', {
         'severity': $('#comboboxSeverity').val().split(',')
     })
+}
+
+//  ---------------------------------------------------
+
+async function listPlants() {
+    try {
+        $('#plants-table').html('');
+
+        // let ucs = {{jsonEncode pageData.data}};
+        let arrData = [];
+
+        $.each(ucs, (index, value) => {
+            arrData.push(value);                
+        });
+
+        $('#plants-table').bootstrapTable({
+            data: arrData,
+            search:"true",
+            pageSize: 10,
+            pageList: "[10,25,50]",
+            pagination: "true",
+            columns: [{
+                        field: 'name',
+                        sortable: 'true',
+                        align: 'left',
+                        title: i18next.t('pages.table.name')  
+                    }, {
+                        field: 'tags.client',
+                        sortable: 'true',
+                        align: 'left',
+                        title: i18next.t('pages.table.client') 
+                    }, {
+                        field: 'actions',
+                        align: 'center',
+                        formatter: actionsFormatter,
+                        events: window.operateEvents,
+                        title: i18next.t('pages.table.actions') 
+                    }]
+            });
+
+        function actionsFormatter(value, row) {
+            let id = row.id;
+            
+            return `<div class="d-flex justify-content-around align-items-center">
+            <a href='/plants/${id}'><i class='bx bx-pencil w-100'></i></a>
+            <a class='deleteplantsId' href='#myModal' data-toggle='modal' data-id="${id}"><i class='bx bxs-trash w-100'></i></a>
+            </div>`
+        } 
+    }catch (err){
+    }
 }
